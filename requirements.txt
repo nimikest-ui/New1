@@ -1,0 +1,10 @@
+# Runtime dependencies
+openai>=1.0.0
+rich>=13.0.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+networkx>=3.0
+
+# Dev / test
+pytest>=7.4
+pytest-mock>=3.12
