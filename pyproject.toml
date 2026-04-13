@@ -16,10 +16,21 @@ dependencies = [
     "ipaddress",          # stdlib, listed for clarity
     "python-dotenv>=1.0.0",
     "networkx>=3.0",
+    # Phase 1 — executor / tool calling
+    "pexpect>=4.9",
+    # Phase 2 & 3 — memory + database
+    "chromadb>=0.5",
+    "sqlalchemy>=2.0",
+    "alembic>=1.13",
+    # Phase 7 — web UI
+    "fastapi>=0.110",
+    "websockets>=12.0",
+    "uvicorn[standard]>=0.29",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.4", "pytest-mock>=3.12"]
+embeddings = ["sentence-transformers>=2.7"]  # optional local embedding model
 
 [project.scripts]
 pentestgpt = "pentestgpt.ui.cli:main"
