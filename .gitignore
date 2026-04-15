@@ -1,0 +1,30 @@
+# Secrets
+config/.env
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Databases (auto-generated)
+db/*.db
+
+# Logs
+logs/
+
+# Artifacts (generated per-run)
+artifacts/tool_recipes/
+artifacts/playbooks/
+
+# Memory (user-specific)
+memory/skills/
+
+# IDE
+.vscode/
+.idea/
+*.swp
