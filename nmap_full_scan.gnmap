@@ -1,0 +1,4 @@
+# Nmap 7.98 scan initiated Wed Apr 15 06:29:12 2026 as: /usr/lib/nmap/nmap --privileged -sV -sC -p- -T4 -oA nmap_full_scan 127.0.0.1
+Host: 127.0.0.1 (localhost)	Status: Up
+Host: 127.0.0.1 (localhost)	Ports: 8080/open/tcp//http//Uvicorn/, 11434/open/tcp//http//Golang net|http server/, 34236/open/tcp//http//Node.js Express framework/, 39643/open/tcp//unknown///	Ignored State: closed (65531)
+# Nmap done at Wed Apr 15 06:30:15 2026 -- 1 IP address (1 host up) scanned in 63.40 seconds

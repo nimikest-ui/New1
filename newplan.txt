@@ -1,0 +1,213 @@
+# =============================================================================
+# NimiPlaybook Mods - All-in-One Integration File
+# Base: Your TopAgent repo + best from agent-nimi + new (KB)
+# Philosophy: Simple & fast straight playbooks by default.
+#             Optional deep research + synthesis only when needed.
+#             Single LLM provider. Rich web UI kept. Low token usage.
+# =============================================================================
+
+# ====================== 1. pyproject.toml (replace or merge) ======================
+"""
+[project]
+name = "nimi-playbook"
+version = "0.1.0"
+description = "Fast Kali pentest agent with KB, playbooks, and optional intelligence"
+requires-python = ">=3.11"
+dependencies = [
+    "typer", "rich", "python-dotenv", "sqlalchemy", "alembic",
+    "requests", "tqdm", "pydantic", "fastapi", "uvicorn",
+    "attackcti", "nvdlib", "chromadb",  # optional vector
+    "stix2", "taxii2-client",  # for MITRE if needed beyond attackcti
+]
+
+[project.scripts]
+kb = "kb.cli:main"
+
+[tool.poetry.group.dev.dependencies]  # if using Poetry, else use pip
+black = "*"
+ruff = "*"
+pytest = "*"
+"""
+
+# ====================== 2. db/schema.sql (run on your pentest.db & kali_tools.db) ======================
+"""
+-- Enhanced kali_tools.db schema (photo #1 + MITRE)
+CREATE TABLE IF NOT EXISTS kali_tools (
+    id INTEGER PRIMARY KEY,
+    tool_name TEXT UNIQUE NOT NULL,
+    category TEXT,
+    attack_phase TEXT,          -- MITRE ATT&CK phase (e.g., reconnaissance, initial-access)
+    one_line_desc TEXT,
+    man_page_compressed TEXT,
+    embedding BLOB,             -- for sqlite-vec or Chroma
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- pentest.db core tables (from agent-nimi, keep your existing + enrich)
+CREATE TABLE IF NOT EXISTS targets (
+    id INTEGER PRIMARY KEY,
+    ip_or_domain TEXT,
+    scope TEXT,
+    project_id TEXT
+);
+
+CREATE TABLE IF NOT EXISTS vulnerabilities (
+    id INTEGER PRIMARY KEY,
+    cve_id TEXT,
+    tool_used TEXT,
+    severity TEXT,
+    attack_technique TEXT,      -- MITRE link
+    loot TEXT
+);
+
+-- Add index for fast search
+CREATE INDEX IF NOT EXISTS idx_attack_phase ON kali_tools(attack_phase);
+"""
+
+# ====================== 3. kb/cli.py (main simple entrypoint) ======================
+import typer
+from rich.console import Console
+from rich.progress import Progress
+import os
+from dotenv import load_dotenv
+
+app = typer.Typer(help="NimiPlaybook — Fast playbooks, smart KB when needed")
+console = Console()
+load_dotenv()
+
+@app.command()
+def sync():
+    """Run all ingesters + compile playbooks (updates knowledge base)"""
+    console.print("[bold green]Starting KB sync with 10 sources...[/]")
+    # Import and run ingesters here (or call a central sync function)
+    from kb.ingesters.mitre_attck_ingester import sync_mitre
+    sync_mitre()
+    # TODO: call other 9 ingesters
+    console.print("[bold green]KB sync complete![/]")
+
+@app.command()
+def agent_init(description: str):
+    """Deep research + synthesize new playbook for a field/vuln"""
+    console.print(f"[bold cyan]Building knowledge world for: {description}[/]")
+    # Call TopAgent reasoner + KB research flow here
+    console.print("[bold green]Playbook created in artifacts/[/]")
+
+@app.command()
+def run(playbook: str, target: str = typer.Option(...), tier: int = 1):
+    """Run a straight playbook (fast default mode)"""
+    console.print(f"[bold yellow]Running {playbook} on {target} (Tier {tier})[/]")
+    # Safe gateway logic (argv-only, scope check) from 'new'
+    # Then feed to reasoner with JSON envelope
+
+@app.command()
+def doctor():
+    """Check setup and connections"""
+    console.print("[bold]NimiPlaybook health check...[/]")
+    # Add checks for DB, LLM key, etc.
+
+if __name__ == "__main__":
+    app()
+
+# ====================== 4. kb/ingesters/mitre_attck_ingester.py ======================
+from attackcti import attackcti
+import sqlite3
+from tqdm import tqdm
+import os
+
+def sync_mitre(db_path: str = "db/kali_tools.db"):
+    """Sync latest MITRE ATT&CK data into kali_tools.db"""
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    
+    client = attackcti.AttackCTI()
+    # Fetch Enterprise ATT&CK (you can add Mobile/ICS later)
+    techniques = client.get_techniques()
+    
+    with Progress() as progress:
+        task = progress.add_task("[cyan]Syncing MITRE ATT&CK...", total=len(techniques))
+        for tech in techniques:
+            # Map to our schema (simplified)
+            tool_name = tech.get("name", "unknown")
+            attack_phase = tech.get("kill_chain_phases", [{}])[0].get("phase_name", "unknown")
+            
+            c.execute("""
+                INSERT OR REPLACE INTO kali_tools 
+                (tool_name, attack_phase, one_line_desc)
+                VALUES (?, ?, ?)
+            """, (tool_name, attack_phase, tech.get("description", "")[:200]))
+            progress.advance(task)
+    
+    conn.commit()
+    conn.close()
+    print(f"✅ MITRE ATT&CK synced ({len(techniques)} techniques)")
+
+# ====================== 5. Other 9 Ingesters (skeleton — expand with Copilot) ======================
+# Create kb/ingesters/ folder and these files:
+
+def nvd_ingester():
+    # Use nvdlib: import nvdlib; results = nvdlib.searchCVE(...)
+    pass
+
+def cisa_kev_ingester():
+    # Simple requests.get("https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json")
+    pass
+
+# Repeat for: otx, virustotal, shodan, abuseipdb, urlhaus, threatfox, hibp
+# Each should normalize → insert into kali_tools.db or pentest.db
+
+# ====================== 6. src/pentestgpt/reasoner.py (key updates) ======================
+# Core changes for speed + photo recommendations:
+
+"""
+# In reasoner.py — add these to your existing task tree / generator loop
+
+class Reasoner:
+    def __init__(self):
+        self.current_tier = 1          # Tier 1 = fast & cheap
+        self.token_budget = 4000       # per step
+        self.iteration = 0
+
+    def think(self, task, context):
+        self.iteration += 1
+        if self.iteration > 5 and self.current_tier < 3:
+            self.current_tier += 1
+
+        # Forced tool search (no hallucinated tools)
+        tools = self.semantic_search_kali_tools(task)  # query kali_tools.db + MITRE filter
+
+        # Output strict JSON envelope (photo #4)
+        prompt = f"""
+        Tier: {self.current_tier} | Budget: {self.token_budget}
+        Available tools: {tools}
+        Respond ONLY with JSON:
+        {{"tool": "...", "target": "...", "mode": "...", "flags": "...", "reason": "..." }}
+        """
+
+        # Call LLM → parse JSON → output parsing step (photo #5)
+        result = self.llm_call(prompt)
+        parsed = self.parse_output(result)  # regex / XML for nmap etc.
+
+        return parsed
+"""
+
+# ====================== 7. core/evaluator.py (light output parsing) ======================
+def evaluate_output(command_output: str, expected_format: str):
+    """First-class parsing + scoring before feeding back to loop"""
+    # Simple regex for common tools + quality score
+    pass
+
+# ====================== 8. core/reflect.py (self-improvement, kept light) ======================
+def reflect_on_run(playbook_name: str, success: bool, output: str):
+    """One-click improve: add successful synthesis back to KB"""
+    if success:
+        # Append new recipe to artifacts/
+        pass
+
+# ====================== End of Mods ======================
+# Next steps in VS Code + Copilot:
+# 1. Paste sections into real files
+# 2. @workspace "Implement the full 10 ingesters based on the skeletons"
+# 3. Run `kb doctor` then `kb sync`
+# 4. Test a simple run: kb run handshake-capture --target AP-xxx --tier 1
+
+print("✅ All NimiPlaybook mods loaded. Copy sections into your project and let Copilot help expand.")

@@ -1,5 +1,6 @@
 # Runtime dependencies
-openai>=1.0.0
+litellm>=1.50
+questionary>=2.0
 rich>=13.0.0
 pyyaml>=6.0
 python-dotenv>=1.0.0
@@ -13,10 +14,14 @@ chromadb>=0.5
 sqlalchemy>=2.0
 alembic>=1.13
 
-# Phase 7 – web UI
-fastapi>=0.110
-websockets>=12.0
-uvicorn[standard]>=0.29
+# NimiPlaybook KB – intelligence ingesters & CLI
+typer>=0.12
+requests>=2.31
+tqdm>=4.66
+attackcti>=0.3
+nvdlib>=0.7
+stix2>=3.0
+taxii2-client>=2.3
 
 # Dev / test
 pytest>=7.4

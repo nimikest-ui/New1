@@ -2,11 +2,12 @@
 # Copy this file to config/config.yaml and fill in your values.
 
 llm:
-  provider: openai          # openai | azure
+  provider: openai          # openai | anthropic | ollama | ollama_cloud | openrouter | azure
   model: gpt-4o
-  api_key: ""               # or set OPENAI_API_KEY env var
+  api_key: ""               # or set OPENAI_API_KEY / ANTHROPIC_API_KEY env var
   temperature: 0.2
   max_tokens: 4096
+  # api_base: ""            # for ollama: http://localhost:11434
 
 scope:
   targets: []               # list of IPs or CIDR ranges, e.g. ["192.168.1.0/24"]
@@ -16,3 +17,27 @@ session:
   log_dir: "./logs"
   auto_execute: false       # if true, commands run automatically; false = human confirms
   max_iterations: 50        # safety stop after N reasoning loops
+
+# ── NimiPlaybook: Tiered execution ──────────────────────────────────────────
+tier:
+  initial: 1                # Start cheap (1=fast, 2=standard, 3=deep)
+  escalate_after: 5         # Escalate tier after N iterations without new findings
+  models:
+    tier1: gpt-4o-mini      # Fast & cheap – decisions from KB cache
+    tier2: gpt-4o           # Standard – balanced cost/quality
+    tier3: gpt-4-turbo      # Deep analysis – full synthesis
+
+# ── NimiPlaybook: KB settings ───────────────────────────────────────────────
+kb:
+  db_path: "./db/kali_tools.db"
+  token_budget:
+    tier1: 2000
+    tier2: 4000
+    tier3: 8000
+  # Optional API keys for premium intelligence sources
+  # (can also set as env vars: OTX_API_KEY, VT_API_KEY, SHODAN_API_KEY, etc.)
+  otx_api_key:      ""
+  vt_api_key:       ""
+  shodan_api_key:   ""
+  abuseipdb_api_key: ""
+  nvd_api_key:      ""      # Increases NVD rate limit; free at nvd.nist.gov

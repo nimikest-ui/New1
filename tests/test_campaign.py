@@ -102,15 +102,13 @@ Host is up (0.001s latency).
 
 
 class TestPrivilegeEscalation(unittest.TestCase):
-    @patch("pentestgpt.campaign.privilege_escalation.PrivilegeEscalation._get_client")
-    def test_check_privesc_vectors_mock_llm(self, mock_get_client):
+    @patch("pentestgpt.llm_client.completion")
+    def test_check_privesc_vectors_mock_llm(self, mock_completion):
         from pentestgpt.campaign.privilege_escalation import PrivilegeEscalation
 
-        mock_client = MagicMock()
         mock_choice = MagicMock()
         mock_choice.message.content = '[{"vector": "SUID binary", "description": "find is SUID", "severity": "high", "commands": ["find . -exec /bin/bash -p \\\\; 2>/dev/null"]}]'
-        mock_client.chat.completions.create.return_value = MagicMock(choices=[mock_choice])
-        mock_get_client.return_value = mock_client
+        mock_completion.return_value = MagicMock(choices=[mock_choice])
 
         executor = MagicMock()
         executor.run.return_value = MagicMock(stdout="uid=1000 sudo -l: find", stderr="", returncode=0)

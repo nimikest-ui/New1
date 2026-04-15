@@ -1,0 +1,114 @@
+# Nmap 7.98 scan initiated Wed Apr 15 06:29:12 2026 as: /usr/lib/nmap/nmap --privileged -sV -sC -p- -T4 -oA nmap_full_scan 127.0.0.1
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0000040s latency).
+Not shown: 65531 closed tcp ports (reset)
+PORT      STATE SERVICE VERSION
+8080/tcp  open  http    Uvicorn
+|_http-title: PENTESTGPT \xE2\x80\x94 SPECTRE
+|_http-server-header: uvicorn
+11434/tcp open  http    Golang net/http server
+| fingerprint-strings: 
+|   FourOhFourRequest: 
+|     HTTP/1.0 404 Not Found
+|     Content-Type: text/plain
+|     Date: Wed, 15 Apr 2026 03:29:34 GMT
+|     Content-Length: 18
+|     page not found
+|   GenericLines, Help, LPDString, RTSPRequest, SIPOptions, SSLSessionReq, Socks5: 
+|     HTTP/1.1 400 Bad Request
+|     Content-Type: text/plain; charset=utf-8
+|     Connection: close
+|     Request
+|   GetRequest: 
+|     HTTP/1.0 200 OK
+|     Content-Type: text/plain; charset=utf-8
+|     Date: Wed, 15 Apr 2026 03:29:19 GMT
+|     Content-Length: 17
+|     Ollama is running
+|   HTTPOptions: 
+|     HTTP/1.0 204 No Content
+|     Allow: HEAD, GET
+|     Date: Wed, 15 Apr 2026 03:29:19 GMT
+|   OfficeScan: 
+|     HTTP/1.1 400 Bad Request: missing required Host header
+|     Content-Type: text/plain; charset=utf-8
+|     Connection: close
+|_    Request: missing required Host header
+|_http-title: Site doesn't have a title (text/plain; charset=utf-8).
+34236/tcp open  http    Node.js Express framework
+|_http-title: Error
+39643/tcp open  unknown
+| fingerprint-strings: 
+|   DNSStatusRequestTCP, DNSVersionBindReqTCP, Help, Kerberos, LDAPBindReq, LDAPSearchReq, LPDString, RPCCheck, SMBProgNeg, SSLSessionReq, TLSSessionReq, TerminalServerCookie, X11Probe: 
+|     HTTP/1.1 400 Bad Request
+|     Connection: close
+|   FourOhFourRequest, GetRequest, HTTPOptions, RTSPRequest: 
+|     HTTP/1.1 404 Not Found
+|     Content-Type: application/json
+|     Date: Wed, 15 Apr 2026 03:29:24 GMT
+|     Connection: close
+|_    {"error":"Gateway not found"}
+2 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port11434-TCP:V=7.98%I=7%D=4/15%Time=69DF060F%P=x86_64-pc-linux-gnu%r(G
+SF:enericLines,67,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Type:\x20
+SF:text/plain;\x20charset=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Bad\
+SF:x20Request")%r(GetRequest,86,"HTTP/1\.0\x20200\x20OK\r\nContent-Type:\x
+SF:20text/plain;\x20charset=utf-8\r\nDate:\x20Wed,\x2015\x20Apr\x202026\x2
+SF:003:29:19\x20GMT\r\nContent-Length:\x2017\r\n\r\nOllama\x20is\x20runnin
+SF:g")%r(HTTPOptions,52,"HTTP/1\.0\x20204\x20No\x20Content\r\nAllow:\x20HE
+SF:AD,\x20GET\r\nDate:\x20Wed,\x2015\x20Apr\x202026\x2003:29:19\x20GMT\r\n
+SF:\r\n")%r(RTSPRequest,67,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-
+SF:Type:\x20text/plain;\x20charset=utf-8\r\nConnection:\x20close\r\n\r\n40
+SF:0\x20Bad\x20Request")%r(Help,67,"HTTP/1\.1\x20400\x20Bad\x20Request\r\n
+SF:Content-Type:\x20text/plain;\x20charset=utf-8\r\nConnection:\x20close\r
+SF:\n\r\n400\x20Bad\x20Request")%r(SSLSessionReq,67,"HTTP/1\.1\x20400\x20B
+SF:ad\x20Request\r\nContent-Type:\x20text/plain;\x20charset=utf-8\r\nConne
+SF:ction:\x20close\r\n\r\n400\x20Bad\x20Request")%r(FourOhFourRequest,7F,"
+SF:HTTP/1\.0\x20404\x20Not\x20Found\r\nContent-Type:\x20text/plain\r\nDate
+SF::\x20Wed,\x2015\x20Apr\x202026\x2003:29:34\x20GMT\r\nContent-Length:\x2
+SF:018\r\n\r\n404\x20page\x20not\x20found")%r(LPDString,67,"HTTP/1\.1\x204
+SF:00\x20Bad\x20Request\r\nContent-Type:\x20text/plain;\x20charset=utf-8\r
+SF:\nConnection:\x20close\r\n\r\n400\x20Bad\x20Request")%r(SIPOptions,67,"
+SF:HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Type:\x20text/plain;\x20c
+SF:harset=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Bad\x20Request")%r(S
+SF:ocks5,67,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Type:\x20text/p
+SF:lain;\x20charset=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Bad\x20Req
+SF:uest")%r(OfficeScan,A3,"HTTP/1\.1\x20400\x20Bad\x20Request:\x20missing\
+SF:x20required\x20Host\x20header\r\nContent-Type:\x20text/plain;\x20charse
+SF:t=utf-8\r\nConnection:\x20close\r\n\r\n400\x20Bad\x20Request:\x20missin
+SF:g\x20required\x20Host\x20header");
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port39643-TCP:V=7.98%I=7%D=4/15%Time=69DF0614%P=x86_64-pc-linux-gnu%r(G
+SF:etRequest,8F,"HTTP/1\.1\x20404\x20Not\x20Found\r\nContent-Type:\x20appl
+SF:ication/json\r\nDate:\x20Wed,\x2015\x20Apr\x202026\x2003:29:24\x20GMT\r
+SF:\nConnection:\x20close\r\n\r\n{\"error\":\"Gateway\x20not\x20found\"}")
+SF:%r(HTTPOptions,8F,"HTTP/1\.1\x20404\x20Not\x20Found\r\nContent-Type:\x2
+SF:0application/json\r\nDate:\x20Wed,\x2015\x20Apr\x202026\x2003:29:24\x20
+SF:GMT\r\nConnection:\x20close\r\n\r\n{\"error\":\"Gateway\x20not\x20found
+SF:\"}")%r(RTSPRequest,8F,"HTTP/1\.1\x20404\x20Not\x20Found\r\nContent-Typ
+SF:e:\x20application/json\r\nDate:\x20Wed,\x2015\x20Apr\x202026\x2003:29:2
+SF:4\x20GMT\r\nConnection:\x20close\r\n\r\n{\"error\":\"Gateway\x20not\x20
+SF:found\"}")%r(RPCCheck,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnect
+SF:ion:\x20close\r\n\r\n")%r(DNSVersionBindReqTCP,2F,"HTTP/1\.1\x20400\x20
+SF:Bad\x20Request\r\nConnection:\x20close\r\n\r\n")%r(DNSStatusRequestTCP,
+SF:2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n"
+SF:)%r(Help,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close
+SF:\r\n\r\n")%r(SSLSessionReq,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nCo
+SF:nnection:\x20close\r\n\r\n")%r(TerminalServerCookie,2F,"HTTP/1\.1\x2040
+SF:0\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n")%r(TLSSessionReq,2
+SF:F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n")
+SF:%r(Kerberos,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20cl
+SF:ose\r\n\r\n")%r(SMBProgNeg,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nCo
+SF:nnection:\x20close\r\n\r\n")%r(X11Probe,2F,"HTTP/1\.1\x20400\x20Bad\x20
+SF:Request\r\nConnection:\x20close\r\n\r\n")%r(FourOhFourRequest,8F,"HTTP/
+SF:1\.1\x20404\x20Not\x20Found\r\nContent-Type:\x20application/json\r\nDat
+SF:e:\x20Wed,\x2015\x20Apr\x202026\x2003:29:24\x20GMT\r\nConnection:\x20cl
+SF:ose\r\n\r\n{\"error\":\"Gateway\x20not\x20found\"}")%r(LPDString,2F,"HT
+SF:TP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n")%r(LD
+SF:APSearchReq,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20cl
+SF:ose\r\n\r\n")%r(LDAPBindReq,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nC
+SF:onnection:\x20close\r\n\r\n");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Wed Apr 15 06:30:15 2026 -- 1 IP address (1 host up) scanned in 63.40 seconds

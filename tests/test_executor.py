@@ -102,21 +102,17 @@ class TestPlannerSummarizerStructure(unittest.TestCase):
         planner = PlannerSummarizer(cfg, executor, registry)
         self.assertIsNotNone(planner)
 
-    @patch("pentestgpt.executor.planner_summarizer.PlannerSummarizer._get_client")
-    def test_run_task_returns_list(self, mock_get_client):
+    @patch("pentestgpt.executor.planner_summarizer.completion")
+    def test_run_task_returns_list(self, mock_completion):
         from pentestgpt.executor.planner_summarizer import PlannerSummarizer
         from pentestgpt.executor.shell_executor import ShellExecutor
         from pentestgpt.reasoning.task_tree import Task, TaskCategory
 
-        # Mock OpenAI: first call returns None (no tool call → done)
-        mock_client = MagicMock()
+        # Mock completion: returns no tool call → done
         mock_choice = MagicMock()
         mock_choice.message.tool_calls = None
         mock_choice.message.content = "DONE: finished"
-        mock_client.chat.completions.create.return_value = MagicMock(
-            choices=[mock_choice]
-        )
-        mock_get_client.return_value = mock_client
+        mock_completion.return_value = MagicMock(choices=[mock_choice])
 
         registry = ToolRegistry()
         executor = ShellExecutor()

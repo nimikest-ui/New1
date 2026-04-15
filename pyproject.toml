@@ -10,7 +10,8 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = [
-    "openai>=1.0.0",
+    "litellm>=1.50",
+    "questionary>=2.0",
     "rich>=13.0.0",
     "pyyaml>=6.0",
     "ipaddress",          # stdlib, listed for clarity
@@ -22,10 +23,14 @@ dependencies = [
     "chromadb>=0.5",
     "sqlalchemy>=2.0",
     "alembic>=1.13",
-    # Phase 7 — web UI
-    "fastapi>=0.110",
-    "websockets>=12.0",
-    "uvicorn[standard]>=0.29",
+    # NimiPlaybook KB additions
+    "typer>=0.12",
+    "requests>=2.31",
+    "tqdm>=4.66",
+    "attackcti>=0.3",
+    "nvdlib>=0.7",
+    "stix2>=3.0",
+    "taxii2-client>=2.3",
 ]
 
 [project.optional-dependencies]
@@ -34,6 +39,7 @@ embeddings = ["sentence-transformers>=2.7"]  # optional local embedding model
 
 [project.scripts]
 pentestgpt = "pentestgpt.ui.cli:main"
+kb         = "pentestgpt.kb.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

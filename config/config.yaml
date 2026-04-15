@@ -1,0 +1,25 @@
+llm:
+  provider: ollama_cloud
+  model: qwen3-coder-next
+  temperature: 0.2
+  max_tokens: 4096
+scope:
+  targets: []
+  excluded: []
+session:
+  log_dir: ./logs
+  auto_execute: false
+  max_iterations: 50
+tier:
+  initial: 1
+  escalate_after: 5
+  models:
+    tier1: gpt-oss:20b
+    tier2: gemma4:31b
+    tier3: qwen3.5:397b
+kb:
+  db_path: ./db/kali_tools.db
+  token_budget:
+    tier1: 2000
+    tier2: 4000
+    tier3: 8000
